@@ -1,6 +1,7 @@
 package com.example.crowdControl.controllers;
 
 import com.example.crowdControl.models.Shop;
+import com.example.crowdControl.services.IShop;
 import com.example.crowdControl.services.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 public class ShopController {
 
     @Autowired
-    private ShopService shopService;
+    private IShop shopService;
 
     @GetMapping()
     public Callable<List<Shop>> getAllShops() {

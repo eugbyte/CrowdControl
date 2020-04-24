@@ -1,7 +1,9 @@
 package com.example.crowdControl.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -17,6 +19,10 @@ public class Visit {
     @ManyToOne
     private Shop shop;
 
-    private Date DateTimeIn;
-    private Date DateTimeOut;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dateTimeIn;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dateTimeOut;
+
 }

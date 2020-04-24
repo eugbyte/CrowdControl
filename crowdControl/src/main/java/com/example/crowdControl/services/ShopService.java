@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class ShopService {
+public class ShopService implements IShop {
     @Autowired
     protected ShopRepository shopRepository;
 
