@@ -16,9 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sun.security.ssl.Debug;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 
@@ -54,14 +56,13 @@ public class VisitController {
     }
 
     @GetMapping("overlaps")
-    public Callable <ResponseEntity> getAllOverlaps() {
+    public Callable <ResponseEntity> getAllOverlaps(@RequestParam(required = false) LocalDate localDate) {
         return () -> {
             try {
-                List<OverlapViewModel> vms = visitService.getAllOverLaps();
+                List<OverlapViewModel> vms = visitService.getAllOverLaps(Optional.ofNullable(localDate));
                 return ResponseEntity.ok(vms);
             } catch (Exception exception) {
-                throw exception;
-                //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.toString());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.toString());
             }
 
         };

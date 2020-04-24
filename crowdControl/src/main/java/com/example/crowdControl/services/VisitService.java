@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -60,7 +58,7 @@ public class VisitService implements IVisit {
         return removeSelfReference(createdVisit);
     }
 
-    public List<OverlapViewModel> getAllOverLaps() {
+    public List<OverlapViewModel> getAllOverLaps(Optional<LocalDate> localDate) {
         List<OverlapViewModel>vms = new ArrayList<>();
         List<Visit> visits = visitRepository.findAll();
 
@@ -72,7 +70,8 @@ public class VisitService implements IVisit {
             Visit targetVisit = visits.get(i);
             LocalDateTime targetDateTimeIn = targetVisit.getDateTimeIn();
             LocalDateTime targetDateTimeOut = targetVisit.getDateTimeOut();
-            OverlapViewModel vm = new OverlapViewModel(targetDateTimeIn, targetDateTimeOut, Arrays.asList(targetVisit));
+            OverlapViewModel vm = new OverlapViewModel(targetDateTimeIn, targetDateTimeOut);
+            vm.visits.add(targetVisit);
 
             for (int j = 0; j < visits.size(); j++ ) {
                 if (j == i)
@@ -81,7 +80,9 @@ public class VisitService implements IVisit {
                 LocalDateTime comparatorDateTimeIn = comparatorVisit.getDateTimeIn();
                 LocalDateTime comparatorDateTimeOut = comparatorVisit.getDateTimeOut();
 
-                if (comparatorDateTimeIn == null || comparatorDateTimeOut == null)
+                if (comparatorDateTimeIn == null || comparatorDateTimeOut == null
+                        || targetDateTimeIn == null
+                        || targetDateTimeOut == null)
                     continue;
 
                 boolean isOverlap1 = (comparatorDateTimeIn.isAfter(targetDateTimeIn) && comparatorDateTimeOut.isBefore(targetDateTimeOut));
@@ -118,6 +119,8 @@ public class VisitService implements IVisit {
 
     protected List<Visit> removeSelfReference(List<Visit> visits) {
         for (Visit visit : visits) {
+            if (visit == null)
+                continue;
             Shop shop = visit.getShop();
             shop.setVisits(null);
             Visitor visitor = visit.getVisitor();

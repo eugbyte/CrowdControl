@@ -4,8 +4,10 @@ import com.example.crowdControl.models.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
+import sun.security.ssl.Debug;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -16,7 +18,6 @@ import java.util.stream.Collectors;
 public class CrowdControlApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(CrowdControlApplication.class, args);
 	}
 
