@@ -1,0 +1,9 @@
+<h2>Shop Form</h2>
+<form [formGroup] = "shopForm">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="input" formControlName="name" id="name" class="form-control" />
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Submit" (click)="onSubmit()" />
+</form>

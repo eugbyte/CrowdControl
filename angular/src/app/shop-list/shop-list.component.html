@@ -1,0 +1,26 @@
+<h2>All shops</h2>
+
+<form [formGroup] = "shopFilterForm">
+    <div class="form-group">
+        <input formControlName="searchText" class="form-control" type="text" />
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Shop Id</th>
+            <th>Shop name</th>
+            <th>Total visits</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let shop of shopsToDisplay">
+            <td>{{ shop.shopId  }}</td>
+            <td>{{ shop.name }}</td>
+            <td>
+                <a href="javascript:void(0);">{{ shop.visits.length }}</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
