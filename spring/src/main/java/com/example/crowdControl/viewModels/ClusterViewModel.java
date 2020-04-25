@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OverlapViewModel {
+public class ClusterViewModel {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     public LocalDateTime dateTimeIn;
 
@@ -16,13 +16,13 @@ public class OverlapViewModel {
 
     public List<Visit> visits;
 
-    public OverlapViewModel(LocalDateTime dateTimeIn, LocalDateTime dateTimeOut) {
+    public ClusterViewModel(LocalDateTime dateTimeIn, LocalDateTime dateTimeOut) {
         this.dateTimeIn = dateTimeIn;
         this.dateTimeOut = dateTimeOut;
         this.visits = new ArrayList<Visit>();
     }
 
-    public OverlapViewModel() {
+    public ClusterViewModel() {
         this.visits = new ArrayList<Visit>();
     };
 }

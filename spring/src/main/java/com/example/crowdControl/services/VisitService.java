@@ -5,7 +5,7 @@ import com.example.crowdControl.models.Visit;
 import com.example.crowdControl.repositories.ShopRepository;
 import com.example.crowdControl.repositories.VisitRepository;
 import com.example.crowdControl.repositories.VisitorRepository;
-import com.example.crowdControl.viewModels.OverlapViewModel;
+import com.example.crowdControl.viewModels.ClusterViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class VisitService implements IVisit {
@@ -29,6 +28,12 @@ public class VisitService implements IVisit {
 
     public List<Visit> findAll() {
         List<Visit> visits = visitRepository.findAll();
+        visits = sortVisitsByDescendingByDateTimeIn(visits);
+        return removeSelfReference(visits);
+    }
+
+    public List<Visit> findVisitsOfVisitor(int visitorId) {
+        List<Visit> visits = visitRepository.findByVisitor_visitorId(visitorId);
         visits = sortVisitsByDescendingByDateTimeIn(visits);
         return removeSelfReference(visits);
     }
@@ -64,10 +69,19 @@ public class VisitService implements IVisit {
         return removeSelfReference(createdVisit);
     }
 
-    public List<OverlapViewModel> getAllOverLaps(Optional<LocalDate> localDate) {
-        List<OverlapViewModel>vms = new ArrayList<>();
-        List<Visit> visits = visitRepository.findAll();
+    public List<Visit> findVisitsByShopId(int shopId) {
+        List<Visit> visits = visitRepository.findByShop_shopId(shopId);
+        visits = sortVisitsByDescendingByDateTimeIn(visits);
+        return removeSelfReference(visits);
+    }
 
+    public List<ClusterViewModel> getAllOverLaps(Optional<LocalDate> localDate) {
+        List<Visit> visits = visitRepository.findAll();
+        return getOverlapsFromProvidedVisits(visits);
+    }
+
+    protected List<ClusterViewModel> getOverlapsFromProvidedVisits(List<Visit> visits) {
+        List<ClusterViewModel>vms = new ArrayList<>();
         //1. loop through each visit
         //2. For the current visit, compare it with other elements in a nested for loop
         //3. Ignore self comparison
@@ -76,7 +90,7 @@ public class VisitService implements IVisit {
             Visit targetVisit = visits.get(i);
             LocalDateTime targetDateTimeIn = targetVisit.getDateTimeIn();
             LocalDateTime targetDateTimeOut = targetVisit.getDateTimeOut();
-            OverlapViewModel vm = new OverlapViewModel(targetDateTimeIn, targetDateTimeOut);
+            ClusterViewModel vm = new ClusterViewModel(targetDateTimeIn, targetDateTimeOut);
             vm.visits.add(targetVisit);
 
             for (int j = 0; j < visits.size(); j++ ) {
@@ -108,6 +122,11 @@ public class VisitService implements IVisit {
         return vms;
     }
 
+    public List<ClusterViewModel> findOverlapVisitsOfShop(int shopId) {
+        List<Visit> visits = visitRepository.findByShop_shopId(shopId);
+        return this.getOverlapsFromProvidedVisits(visits);
+    }
+
     @Async  //Annotation can work for entity that is many to one, but not vice versa
     public CompletableFuture<Visit> getById(int visitId) {
         CompletableFuture<Visit> visitCf = visitRepository.getByVisitId(visitId);
@@ -131,12 +150,7 @@ public class VisitService implements IVisit {
 
     protected List<Visit> removeSelfReference(List<Visit> visits) {
         for (Visit visit : visits) {
-            if (visit == null)
-                continue;
-            Shop shop = visit.getShop();
-            shop.setVisits(null);
-            Visitor visitor = visit.getVisitor();
-            visitor.setVisits(null);
+            visit = removeSelfReference(visit);
         }
         return visits;
     }

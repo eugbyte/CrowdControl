@@ -3,7 +3,7 @@ package com.example.crowdControl.services;
 import com.example.crowdControl.models.Shop;
 import com.example.crowdControl.models.Visit;
 import com.example.crowdControl.models.Visitor;
-import com.example.crowdControl.viewModels.OverlapViewModel;
+import com.example.crowdControl.viewModels.ClusterViewModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +15,9 @@ public interface IVisit {
     List<Visit> findAll();
     List<Visit> findVisitsBetweenRange(LocalDateTime dateTimeIn, LocalDateTime dateTimeOut);
     Visit createVisit(Visitor _visitor, Shop _shop);
-    List<OverlapViewModel> getAllOverLaps(Optional<LocalDate> localDate);
+    List<ClusterViewModel> getAllOverLaps(Optional<LocalDate> localDate);
     CompletableFuture<Visit> getById(int visitId);
+    List<Visit> findVisitsOfVisitor(int visitorId);
+    List<Visit> findVisitsByShopId(int shopId);
+    List<ClusterViewModel> findOverlapVisitsOfShop(int shopId);
 }

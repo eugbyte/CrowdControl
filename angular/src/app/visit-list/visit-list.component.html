@@ -1,0 +1,22 @@
+<h2 *ngIf="SHOP">Visits of {{ SHOP.name }}</h2>
+
+<button (click)="onViewClusters()" class="btn btn-primary">View Clusters</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Visit Id</th>
+            <th>Visitor</th>
+            <th>DateTime In</th>
+            <th>DateTime Out</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let visit of visitsToDisplay">
+            <td>{{ visit.visitId }}</td>
+            <td>{{ visit.visitor.name + " " + visit.visitor.nric }}</td>
+            <td>{{ visit.dateTimeIn }}</td>
+            <td>{{ visit.dateTimeOut }}</td>
+        </tr>
+    </tbody>
+</table>

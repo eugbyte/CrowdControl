@@ -1,8 +1,11 @@
 <h2>All shops</h2>
 
+<button class="btn btn-primary" (click)="onEdit()">Create shop</button>
+<br><br>
+
 <form [formGroup] = "shopFilterForm">
     <div class="form-group">
-        <input formControlName="searchText" class="form-control" type="text" />
+        <input formControlName="searchText" class="form-control" type="text" placeholder="search bar" />
     </div>
 </form>
 
@@ -12,6 +15,8 @@
             <th>Shop Id</th>
             <th>Shop name</th>
             <th>Total visits</th>
+            <th>Edit</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -19,8 +24,10 @@
             <td>{{ shop.shopId  }}</td>
             <td>{{ shop.name }}</td>
             <td>
-                <a href="javascript:void(0);">{{ shop.visits.length }}</a>
+                <a (click)="onSeeVisitsOfShop(shop.shopId)" href="javascript:void(0);">{{ shop.visits.length }}</a>
             </td>
+            <td><button class="btn btn-primary" (click)="onEdit(shop.shopId)">Edit</button></td>
+            <td><button class="btn btn-danger" (click)="onDelete(shop.shopId)">Delete</button></td>
         </tr>
     </tbody>
 </table>

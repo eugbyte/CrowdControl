@@ -2,12 +2,11 @@ package com.example.crowdControl.controllers;
 
 import com.example.crowdControl.models.Shop;
 import com.example.crowdControl.services.IShop;
-import com.example.crowdControl.services.ShopService;
+import com.example.crowdControl.viewModels.StringResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.security.ssl.Debug;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -45,25 +44,26 @@ public class ShopController {
         };
     }
 
+    //@CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping()
     public Callable<ResponseEntity> updateShop(@RequestBody Shop shop) {
 
         return () -> {
             try {
-                Shop updatedShop = shopService.updateShop(shop);
-                return ResponseEntity.ok(updatedShop.toString());
+                Shop updatedShop = shopService.updateShopName(shop);
+                return ResponseEntity.ok(updatedShop);
             } catch (Exception exception) {
                 return ResponseEntity.badRequest().body("not found " + exception.toString());
             }
         };
     }
 
-    @DeleteMapping("{shopId}")
+    @DeleteMapping(value = "{shopId}", produces = "application/json")
     public Callable<ResponseEntity> deleteShop(@PathVariable int shopId) {
         return () -> {
             try {
                 shopService.deleteShop(shopId);
-                return ResponseEntity.ok("delete success");
+                return ResponseEntity.ok(new StringResponse(shopId + " deleted"));
             } catch (Exception exception) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(exception.toString());

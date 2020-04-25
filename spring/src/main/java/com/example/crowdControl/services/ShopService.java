@@ -41,7 +41,7 @@ public class ShopService implements IShop {
         return shopRepository.findTopByOrderByShopIdDesc();
     };
 
-    public Shop updateShop(Shop shop) {
+    public Shop updateShopName(Shop shop) {
         int shopId = shop.getShopId();
         Shop shopToUpdate = shopRepository.findByShopId(shopId);
 

@@ -9,6 +9,6 @@ public interface IShop {
     CompletableFuture<Shop> getByShopId(int shopId);
     List<Shop> findAllShops();
     Shop createShop(Shop shop);
-    Shop updateShop(Shop shop);
+    Shop updateShopName(Shop shop);
     void deleteShop(int shopId);
 }

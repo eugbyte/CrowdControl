@@ -8,5 +8,5 @@ export interface IShop {
 export class Shop implements IShop {
     shopId: number;
     name: string;
-    visits: IVisit[];
+    visits: IVisit[] = [];
 }
