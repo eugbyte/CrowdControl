@@ -20,6 +20,8 @@ public interface VisitRepository extends JpaRepository<Visit, Integer> {
 
     Visit findTopByOrderByVisitIdDesc();
 
+    Visit findTopByVisitor_visitorIdAndShop_shopIdOrderByVisitIdDesc(int visitorId, int shopId);
+
     List<Visit> findByVisitor_visitorId(Integer visitorId);
 
     List<Visit> findByDateTimeInAfterAndDateTimeOutBefore(LocalDateTime dateTimeIn, LocalDateTime dateTimeOut);

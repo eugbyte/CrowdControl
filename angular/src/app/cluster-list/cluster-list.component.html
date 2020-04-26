@@ -1,1 +1,26 @@
-<p>cluster-list works!</p>
+<h2 *ngIf="SHOP">Clusters of {{ SHOP.name }}</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>DateTime in</td>
+            <td>DateTime out</td>
+            <td>Number of visitors</td>
+            <td>Visitors</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let cluster of clustersToDisplay">
+            <td>{{ cluster.dateTimeIn }}</td>
+            <td>{{ cluster.dateTimeOut }}</td>
+            <td>{{ cluster.visits.length }}</td>
+            <td>
+                <select class="form-control">
+                    <option *ngFor="let visit of cluster.visits">
+                        {{ visit | visitPipe }}
+                    </option>
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>

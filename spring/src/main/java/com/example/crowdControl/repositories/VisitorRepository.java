@@ -12,5 +12,5 @@ public interface VisitorRepository extends JpaRepository<Visitor, Integer> {
     Visitor findByVisitorId(int visitorId);
     List<Visitor> findAll();
 
-    Visitor findTopByOrderByVisitorId();
+    Visitor findTopByOrderByVisitorIdDesc();
 }

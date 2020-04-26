@@ -6,9 +6,11 @@ import com.example.crowdControl.repositories.ShopRepository;
 import com.example.crowdControl.repositories.VisitRepository;
 import com.example.crowdControl.repositories.VisitorRepository;
 import com.example.crowdControl.viewModels.ClusterViewModel;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import sun.security.ssl.Debug;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,11 +20,11 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class VisitService implements IVisit {
     @Autowired
-    private VisitRepository visitRepository;
+    protected VisitRepository visitRepository;
     @Autowired
-    private VisitorRepository visitorRepository;
+    protected VisitorRepository visitorRepository;
     @Autowired
-    private ShopRepository shopRepository;
+    protected ShopRepository shopRepository;
 
     private final Comparator<Visit> visitDateInComparator = Comparator.comparing(Visit::getDateTimeIn).reversed();
 
@@ -43,10 +45,14 @@ public class VisitService implements IVisit {
         return removeSelfReference(visits);
     }
 
-    public Visit createVisit(Visitor _visitor, Shop _shop) {
-        String nric = _visitor.getNric();
-        String name = _visitor.getName();
-        int shopId = _shop.getShopId();
+    public Visit createVisit(Visit _visit) {
+        String nric = _visit.getVisitor().getNric();
+        String name = _visit.getVisitor().getName();
+        int shopId = _visit.getShop().getShopId();
+        LocalDateTime dateTimeIn = _visit.getDateTimeIn();
+        LocalDateTime dateTimeOut = _visit.getDateTimeOut();
+        Debug.println("dateTimeIn", String.valueOf(dateTimeIn));
+        Debug.println("dateTimeOut", String.valueOf(dateTimeOut));
 
         //Check if visitor exists. If not, create the visitor
         Visitor visitor = visitorRepository.findByNric(nric);
@@ -55,16 +61,30 @@ public class VisitService implements IVisit {
             visitor = createVisitor(nric, name);
         }
 
+        //The visit from the request body either records entry OR exit, but not both
+        if (dateTimeIn == null && dateTimeOut != null) {
+            Visit latestVisit = visitRepository.findTopByVisitor_visitorIdAndShop_shopIdOrderByVisitIdDesc(visitor.getVisitorId(), shopId);
+            latestVisit.setDateTimeOut(dateTimeOut);
+            visitRepository.save(latestVisit);
+            return removeSelfReference(latestVisit);
+        }
+
         //Get the shop
         Shop shop = shopRepository.findByShopId(shopId);
 
         //Create the new visit
         Visit visit = new Visit();
-        visit.setDateTimeIn(LocalDateTime.now());
         visit.setShop(shop);
         visit.setVisitor(visitor);
+
+        if (dateTimeIn != null && dateTimeOut == null) {
+            visit.setDateTimeIn(dateTimeIn);
+        } else {
+            Debug.println("500", "json requestBody error");
+        }
         visitRepository.save(visit);
 
+        //Retrieve latest created visit
         Visit createdVisit = visitRepository.findTopByOrderByVisitIdDesc();
         return removeSelfReference(createdVisit);
     }
@@ -73,58 +93,6 @@ public class VisitService implements IVisit {
         List<Visit> visits = visitRepository.findByShop_shopId(shopId);
         visits = sortVisitsByDescendingByDateTimeIn(visits);
         return removeSelfReference(visits);
-    }
-
-    public List<ClusterViewModel> getAllOverLaps(Optional<LocalDate> localDate) {
-        List<Visit> visits = visitRepository.findAll();
-        return getOverlapsFromProvidedVisits(visits);
-    }
-
-    protected List<ClusterViewModel> getOverlapsFromProvidedVisits(List<Visit> visits) {
-        List<ClusterViewModel>vms = new ArrayList<>();
-        //1. loop through each visit
-        //2. For the current visit, compare it with other elements in a nested for loop
-        //3. Ignore self comparison
-        //4. If comparator starts after target, or ends before target, append to list of vms
-        for (int i = 0; i < visits.size(); i++) {
-            Visit targetVisit = visits.get(i);
-            LocalDateTime targetDateTimeIn = targetVisit.getDateTimeIn();
-            LocalDateTime targetDateTimeOut = targetVisit.getDateTimeOut();
-            ClusterViewModel vm = new ClusterViewModel(targetDateTimeIn, targetDateTimeOut);
-            vm.visits.add(targetVisit);
-
-            for (int j = 0; j < visits.size(); j++ ) {
-                if (j == i)
-                    continue;
-                Visit comparatorVisit = visits.get(j);
-                LocalDateTime comparatorDateTimeIn = comparatorVisit.getDateTimeIn();
-                LocalDateTime comparatorDateTimeOut = comparatorVisit.getDateTimeOut();
-
-                if (comparatorDateTimeIn == null || comparatorDateTimeOut == null
-                        || targetDateTimeIn == null
-                        || targetDateTimeOut == null)
-                    continue;
-
-                boolean isOverlap1 = (comparatorDateTimeIn.isAfter(targetDateTimeIn) && comparatorDateTimeOut.isBefore(targetDateTimeOut));
-                boolean isOverlap2 = (comparatorDateTimeIn.isBefore(targetDateTimeIn) && comparatorDateTimeOut.isAfter(targetDateTimeOut));
-                if (isOverlap1 || isOverlap2)
-                    vm.visits.add(comparatorVisit);
-
-            }//end of inner for loop
-            //If the overlap viewModel has a visit other than the target self
-            if (vm.visits.size() >= 2)
-                vms.add(vm);
-        }//end of outer for loop
-
-        vms.forEach(vm -> {
-            vm.visits = removeSelfReference(vm.visits);
-        });
-        return vms;
-    }
-
-    public List<ClusterViewModel> findOverlapVisitsOfShop(int shopId) {
-        List<Visit> visits = visitRepository.findByShop_shopId(shopId);
-        return this.getOverlapsFromProvidedVisits(visits);
     }
 
     @Async  //Annotation can work for entity that is many to one, but not vice versa
@@ -144,7 +112,7 @@ public class VisitService implements IVisit {
         visitor.setNric(nric);
         visitor.setName(name);
         visitorRepository.save(visitor);
-        visitor = visitorRepository.findTopByOrderByVisitorId();
+        visitor = visitorRepository.findTopByOrderByVisitorIdDesc();
         return visitor;
     }
 

@@ -5,7 +5,9 @@ import com.example.crowdControl.models.Visit;
 import com.example.crowdControl.models.Visitor;
 import com.example.crowdControl.services.IVisit;
 import com.example.crowdControl.viewModels.ClusterViewModel;
+import com.example.crowdControl.viewModels.VisitViewModel;
 import com.example.crowdControl.viewModels.VisitorShopViewModel;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -30,37 +32,25 @@ public class VisitController {
         return () -> {
             List<Visit> visits = visitService.findVisitsByShopId(shopId);
             return ResponseEntity.ok(visits);
-        };
-    }
+        };    }
 
-    @GetMapping("cluster/{shopId}")
-    public Callable<ResponseEntity> getClustersOfShop(@PathVariable int shopId) {
-        return () -> {
-            List<ClusterViewModel> vms = visitService.findOverlapVisitsOfShop(shopId);
-            return ResponseEntity.ok(vms);
-        };
-    }
+
 
     @PostMapping()
-    public Callable<ResponseEntity> createVisit(@RequestBody VisitorShopViewModel visitorShopViewModel) {
+    public Callable<ResponseEntity> createVisit(@RequestBody VisitViewModel visitViewModel) {
         return ()-> {
-            Visitor visitor = visitorShopViewModel.visitor;
-            Shop shop = visitorShopViewModel.shop;
-            Visit visit = visitService.createVisit(visitor, shop);
-            return ResponseEntity.ok(visit);
-        };
-    }
+            //Currently facing serialization issue from JS Date to Java DateTimeNow
+            //Will work on it later, for now use shortcut
+            Visit visit = new Visit();
+            visit.setVisitor(visitViewModel.getVisitor());
+            visit.setShop((visitViewModel.getShop()));
+            if (visitViewModel.entryOrExit.equals("ENTRY"))
+                visit.setDateTimeIn(LocalDateTime.now());
+            else if (visitViewModel.entryOrExit.equals("EXIT"))
+                visit.setDateTimeOut(LocalDateTime.now());
 
-    @GetMapping("overlaps")
-    public Callable <ResponseEntity> getAllOverlaps(@RequestParam(required = false) LocalDate localDate) {
-        return () -> {
-            try {
-                List<ClusterViewModel> vms = visitService.getAllOverLaps(Optional.ofNullable(localDate));
-                return ResponseEntity.ok(vms);
-            } catch (Exception exception) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.toString());
-            }
-
+            Visit createdVisit = visitService.createVisit(visit);
+            return ResponseEntity.ok(createdVisit);
         };
     }
 

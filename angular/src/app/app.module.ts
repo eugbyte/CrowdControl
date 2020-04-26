@@ -12,6 +12,9 @@ import { WelcomePageComponent } from './welcome-page/welcome-page.component';
 import { VisitListComponent } from './visit-list/visit-list.component';
 import { VisitFormComponent } from './visit-form/visit-form.component';
 import { ClusterListComponent } from './cluster-list/cluster-list.component';
+import { VisitPipe } from './pipes/visit.pipe';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatPaginatorModule } from '@angular/material/paginator'; 
 
 @NgModule({
   declarations: [
@@ -22,14 +25,17 @@ import { ClusterListComponent } from './cluster-list/cluster-list.component';
     WelcomePageComponent,
     VisitListComponent,
     VisitFormComponent,
-    ClusterListComponent
+    ClusterListComponent,
+    VisitPipe,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -14,10 +14,8 @@ import java.util.concurrent.CompletableFuture;
 public interface IVisit {
     List<Visit> findAll();
     List<Visit> findVisitsBetweenRange(LocalDateTime dateTimeIn, LocalDateTime dateTimeOut);
-    Visit createVisit(Visitor _visitor, Shop _shop);
-    List<ClusterViewModel> getAllOverLaps(Optional<LocalDate> localDate);
+    Visit createVisit(Visit _visit);
     CompletableFuture<Visit> getById(int visitId);
     List<Visit> findVisitsOfVisitor(int visitorId);
     List<Visit> findVisitsByShopId(int shopId);
-    List<ClusterViewModel> findOverlapVisitsOfShop(int shopId);
 }

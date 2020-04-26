@@ -1,6 +1,14 @@
+<br><br>
+<button (click)="onViewClusters()" class="btn btn-primary">View Clusters</button>
+<br><br>
+
 <h2 *ngIf="SHOP">Visits of {{ SHOP.name }}</h2>
 
-<button (click)="onViewClusters()" class="btn btn-primary">View Clusters</button>
+<mat-paginator [length]="pageLength"
+    [pageSize]="pageSize"
+    [hidePageSize]="true"
+    (page)="setPage($event)">
+</mat-paginator>
 
 <table class="table">
     <thead>
