@@ -1,12 +1,12 @@
 <h2 *ngIf="SHOP">Clusters of {{ SHOP.name }}</h2>
 
-<table class="table">
-    <thead>
+<table [class]="TABLE_CSS">
+    <thead class="thead-dark">
         <tr>
-            <td>DateTime in</td>
-            <td>DateTime out</td>
-            <td>Number of visitors</td>
-            <td>Visitors</td>
+            <th>DateTime in</th>
+            <th>DateTime out</th>
+            <th>Number of visitors</th>
+            <th>Visitors</th>
         </tr>
     </thead>
     <tbody>

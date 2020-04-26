@@ -5,6 +5,7 @@ import { ICluster } from '../models/Cluster';
 import * as lodash from "lodash";
 import { ShopService } from '../services/shop.service';
 import { IShop } from '../models/shop';
+import { StringStorage } from '../StringStorage';
 
 @Component({
   selector: 'app-cluster-list',
@@ -20,7 +21,8 @@ export class ClusterListComponent implements OnInit {
   private CLUSTERS: ICluster[];
   SHOP: IShop;
   clustersToDisplay: ICluster[];
-  
+
+  public readonly TABLE_CSS = StringStorage.TABLE_CSS;  
 
   constructor(visitService: VisitService, route: ActivatedRoute, shopService: ShopService) {
     this.visitService = visitService;

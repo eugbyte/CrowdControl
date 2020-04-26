@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IShop } from '../models/shop';
 import { PageEvent } from '@angular/material/paginator';
+import { IVisit } from '../models/Visit';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,13 @@ export class FilterService {
       return (fullDescription.includes(searchText));
     });
     return resultShops;
+  }
+
+  filterVisitsByDates(visits: IVisit[], startDate: Date, endDate: Date): IVisit[] {
+    let resultVisits = visits
+      .filter(visit => (startDate && visit.dateTimeIn) ? visit.dateTimeIn >= startDate : true)
+      .filter(visit => (endDate && visit.dateTimeOut) ? visit.dateTimeOut <= endDate : true);
+      return resultVisits;
   }
 
   filterElementsToDisplayPerPage(elements: any[], pageSize: number, event?: PageEvent): any[] {

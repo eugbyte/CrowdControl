@@ -4,14 +4,39 @@
 
 <h2 *ngIf="SHOP">Visits of {{ SHOP.name }}</h2>
 
-<mat-paginator [length]="pageLength"
-    [pageSize]="pageSize"
-    [hidePageSize]="true"
-    (page)="setPage($event)">
-</mat-paginator>
+<div>
+    <form [formGroup]="dateForm">
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="startDate">Start From </label>
+                    <input type="date" formControlName="startDate" class="form-control" id="startDate"/>
+                </div>
+            </div>
 
-<table class="table">
-    <thead>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label for="endDate">End By </label>
+                    <input type="date" formControlName="endDate" class="form-control" id="endDate"/>
+                </div>
+            </div>
+        </div>           
+
+    </form>
+    
+    
+
+    <mat-paginator [length]="pageLength"
+        [pageSize]="pageSize"
+        [hidePageSize]="true"
+        (page)="setPage($event)">
+    </mat-paginator>
+</div>
+
+
+
+<table [class]="TABLE_CSS">
+    <thead class="thead-dark">
         <tr>
             <th>Visit Id</th>
             <th>Visitor</th>

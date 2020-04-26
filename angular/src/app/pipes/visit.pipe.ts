@@ -8,7 +8,7 @@ export class VisitPipe implements PipeTransform {
 
   transform(visit: IVisit): string {
     let description: string = `${visit.visitor.name}(${visit.visitor.nric}) `;
-    description += `${visit.dateTimeIn} -> ${visit.dateTimeOut} `;
+    description += `${visit.dateTimeIn} to ${visit.dateTimeOut} `;
     return description;
   }
 

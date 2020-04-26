@@ -5,6 +5,7 @@ import * as lodash from 'lodash';
 import { FilterService } from '../services/filter.service';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { StringStorage } from '../StringStorage';
 
 @Component({
   selector: 'app-shop-list',
@@ -23,6 +24,8 @@ export class ShopListComponent implements OnInit {
 
   shopsToDisplay: IShop[];
   shopFilterForm: FormGroup;
+
+  public readonly TABLE_CSS = StringStorage.TABLE_CSS;
 
   constructor(shopService: ShopService, filterService: FilterService, fb: FormBuilder, router: Router) { 
     this.shopService = shopService;    
