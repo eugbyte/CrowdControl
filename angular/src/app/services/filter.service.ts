@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IShop } from '../models/shop';
 import { PageEvent } from '@angular/material/paginator';
 import { IVisit } from '../models/Visit';
+import { ICluster } from '../models/Cluster';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,24 @@ export class FilterService {
       return (fullDescription.includes(searchText));
     });
     return resultShops;
+  }
+
+  filterClustersBySearchText(clusters: ICluster[], searchText: string): ICluster[] {
+    console.log("in filter");
+    searchText = searchText.toLowerCase().replace(/\s/g,'').toLowerCase();
+    let resultCluters: ICluster[] = clusters.filter(cluster => {
+      let { dateTimeIn, dateTimeOut, visits } = cluster;
+      let fullDescription: string = dateTimeIn.toString() + dateTimeOut.toString();
+      console.log(fullDescription);
+      visits.forEach(visit => {
+        let { dateTimeIn, dateTimeOut, visitor } = visit;
+        fullDescription += dateTimeIn.toString() + dateTimeOut.toString() + visitor.name + visitor.nric;
+      });
+      fullDescription = fullDescription.replace(/\s/g,'').toLowerCase();
+      return (fullDescription.includes(searchText));
+    });
+    return resultCluters;
+
   }
 
   filterVisitsByDates(visits: IVisit[], startDate: Date, endDate: Date): IVisit[] {

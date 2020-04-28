@@ -1,6 +1,7 @@
 <h2 *ngIf="SHOP">Clusters of {{ SHOP.name }}</h2>
 
-<table [class]="TABLE_CSS">
+<app-searchbar [parentForm]="clusterFilterForm"></app-searchbar>
+<table *ngIf="clustersToDisplay; else noCluster" [class]="TABLE_CSS">
     <thead class="thead-dark">
         <tr>
             <th>DateTime in</th>
@@ -24,3 +25,7 @@
         </tr>
     </tbody>
 </table>
+
+<ng-template #noCluster>
+    <p>No overlapping visits present</p>
+</ng-template>

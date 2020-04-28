@@ -47,7 +47,7 @@ public class ShopService implements IShop {
 
         shopToUpdate.setName(shop.getName());
         shopRepository.save(shopToUpdate);
-        return shopToUpdate;
+        return removeSelfReferenceLoop(shopToUpdate);
     }
 
     public void deleteShop(int shopId) {

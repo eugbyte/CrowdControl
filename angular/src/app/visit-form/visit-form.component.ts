@@ -27,6 +27,7 @@ export class VisitFormComponent implements OnInit {
 
   responseMessages: string[] = [];
 
+  currentDateTime: string = new Date().toDateString() + " " + new Date().toLocaleTimeString();
 
   constructor(fb: FormBuilder, shopService: ShopService,visitService: VisitService) { 
     this.fb = fb;

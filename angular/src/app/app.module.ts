@@ -14,7 +14,8 @@ import { VisitFormComponent } from './visit-form/visit-form.component';
 import { ClusterListComponent } from './cluster-list/cluster-list.component';
 import { VisitPipe } from './pipes/visit.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatPaginatorModule } from '@angular/material/paginator'; 
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SearchbarComponent } from './searchbar/searchbar.component'; 
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     VisitFormComponent,
     ClusterListComponent,
     VisitPipe,
+    SearchbarComponent,
   ],
   imports: [
     BrowserModule,

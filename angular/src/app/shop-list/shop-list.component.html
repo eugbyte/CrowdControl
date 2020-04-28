@@ -3,11 +3,7 @@
 <button class="btn btn-primary" (click)="onEdit()">Create shop</button>
 <br><br>
 
-<form [formGroup] = "shopFilterForm">
-    <div class="form-group">
-        <input formControlName="searchText" class="form-control" type="text" placeholder="search bar" />
-    </div>
-</form>
+<app-searchbar [parentForm]="shopFilterForm"></app-searchbar>
 
 <table [class]="TABLE_CSS">
     <thead class="thead-dark">
@@ -24,7 +20,7 @@
             <td>{{ shop.shopId  }}</td>
             <td>{{ shop.name }}</td>
             <td>
-                <a (click)="onSeeVisitsOfShop(shop.shopId)" href="javascript:void(0);">{{ shop.visits.length }}</a>
+                <button (click)="onSeeVisitsOfShop(shop.shopId)" class="btn btn-warning">{{ shop.visits.length }}</button>
             </td>
             <td><button class="btn btn-primary" (click)="onEdit(shop.shopId)">Edit</button></td>
             <td><button class="btn btn-danger" (click)="onDelete(shop.shopId)">Delete</button></td>

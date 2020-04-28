@@ -1,5 +1,5 @@
-<br><br>
-<button (click)="onViewClusters()" class="btn btn-primary">View Clusters</button>
+<br>
+<button (click)="onViewClusters()" class="btn btn-danger">View Overlapping Visits</button>
 <br><br>
 
 <h2 *ngIf="SHOP">Visits of {{ SHOP.name }}</h2>
@@ -24,16 +24,12 @@
 
     </form>
     
-    
-
     <mat-paginator [length]="pageLength"
         [pageSize]="pageSize"
         [hidePageSize]="true"
         (page)="setPage($event)">
     </mat-paginator>
 </div>
-
-
 
 <table [class]="TABLE_CSS">
     <thead class="thead-dark">
